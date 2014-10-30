@@ -19,7 +19,8 @@
     },
     "autoload": {
         "psr-0": {
-            "Codito\\": ""
+            "Codito\\Silex\\DoctrineMigrationsService": ""
         }
-    }
+    },
+    "target-dir": "Codito/Silex/DoctrineMigrationsService"
 }
