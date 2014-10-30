@@ -1,0 +1,25 @@
+{
+    "name": "codito/doctrine-migrations-service-provider",
+    "type": "library",
+    "description": "Doctrine Migrations service provider for Silex applications",
+    "keywords": [ "silex", "doctrine2", "migration" ],
+    "homepage": "http://codito.net",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Grzegorz Korba",
+            "email": "grzegorz.korba@codito.net"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "knplabs/console-service-provider": "dev-master",
+        "doctrine/migrations": "dev-master",
+        "symfony/event-dispatcher": "~2.5"
+    },
+    "autoload": {
+        "psr-0": {
+            "Codito\\": ""
+        }
+    }
+}
