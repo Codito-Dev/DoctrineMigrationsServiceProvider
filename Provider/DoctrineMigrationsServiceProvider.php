@@ -7,7 +7,7 @@ use Silex\ServiceProviderInterface;
 use Knp\Console\Application as ConsoleApp;
 use Knp\Console\ConsoleEvents;
 use Knp\Console\ConsoleEvent;
-use Doctrine\DBAL\Migrations\Tools\Console\Command as DoctrineCommands;
+use Codito\Silex\DoctrineMigrationsService\Console\Command as DoctrineCommands;
 
 class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 	public function register(Application $app) {
