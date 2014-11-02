@@ -12,6 +12,8 @@ use Knp\Console\ConsoleEvent;
 use Doctrine\DBAL\Connection;
 
 class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
+	const DEFAULT_CONNECTION_NAME = 'default';
+
 	public function register(Application $app) {
 		$app['db.migrations.config._proto'] = $app->protect(function (Connection $connection, array $config) {
 			$defaults = array(
@@ -27,11 +29,28 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 			);
 		});
 
-		$dbs = isset($app['dbs']) ? $app['dbs'] : ['default' => $app['db']];
+		$app['db.migrations.config.resolver'] = $app->protect(function ($name) use($app) {
+			if(!isset($app['db.migrations.config']) || !is_array($app['db.migrations.config'])) {
+				return [];
+			}
+
+			// Handle multiple connections configuration (like 'dbs.options')
+			if(isset($app['db.migrations.config'][$name]) && is_array($app['db.migrations.config'][$name])) {
+				$config = $app['db.migrations.config'][$name];
+			}
+			// Handle single connection (like 'db.option')
+			elseif($name == self::DEFAULT_CONNECTION_NAME) {
+				$config = $app['db.migrations.config'];
+			}
+
+			return isset($config) ? $config : [];
+		});
+
+		$dbs = isset($app['dbs']) ? $app['dbs'] : [self::DEFAULT_CONNECTION_NAME => $app['db']];
 
 		foreach($dbs as $name => $connection) {
 			$app['db.migrations.' . $name] = $app->share(function ($app) use($name, $connection) {
-				$dbMigrationConfig = isset($app['db.migrations.config.' . $name]) ? $app['db.migrations.config.' . $name] : [];
+				$dbMigrationConfig = $app['db.migrations.config.resolver']($name);
 
 				return $app['db.migrations.config._proto']($connection, $dbMigrationConfig);
 			});
