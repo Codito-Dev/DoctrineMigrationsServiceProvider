@@ -6,7 +6,6 @@ use Codito\Silex\DoctrineMigrationsService\Console\CommandConfigurator;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Doctrine\Bundle\DoctrineBundle\Command\Proxy\DoctrineCommandHelper;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand as BaseStatusCommand;
 
@@ -27,7 +26,7 @@ class StatusCommand extends BaseStatusCommand {
 	}
 
 	public function execute(InputInterface $input, OutputInterface $output) {
-		$this->resolveConfiguration();
+		$this->resolveConfiguration($input);
 
 		parent::execute($input, $output);
 	}
