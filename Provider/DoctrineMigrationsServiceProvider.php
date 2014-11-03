@@ -12,6 +12,7 @@ use Knp\Console\ConsoleEvent;
 use Doctrine\DBAL\Connection;
 
 class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
+	// DoctrineServiceProvider's default connection's name (@see 'dbs.options.initializer')
 	const DEFAULT_CONNECTION_NAME = 'default';
 
 	public function register(Application $app) {
@@ -46,15 +47,22 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 			return isset($config) ? $config : [];
 		});
 
-		$dbs = isset($app['dbs']) ? $app['dbs'] : [self::DEFAULT_CONNECTION_NAME => $app['db']];
+		$app['db.migrations'] = $app->share(function ($app) {
+			$migrations = new \Pimple();
 
-		foreach($dbs as $name => $connection) {
-			$app['db.migrations.' . $name] = $app->share(function ($app) use($name, $connection) {
-				$dbMigrationConfig = $app['db.migrations.config.resolver']($name);
+			$dbs = $app['dbs']->keys();
+			foreach($dbs as $name) {
+				$connection = $app['dbs'][$name];
 
-				return $app['db.migrations.config._proto']($connection, $dbMigrationConfig);
-			});
-		}
+				$migrations[$name] = $app->share(function () use($app, $name, $connection) {
+					$dbMigrationConfig = $app['db.migrations.config.resolver']($name);
+
+					return $app['db.migrations.config._proto']($connection, $dbMigrationConfig);
+				});
+			}
+
+			return $migrations;
+		});
 
 		$app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
 			$consoleApp = $event->getApplication(); /* @var $console ConsoleApp */

@@ -21,7 +21,7 @@ trait CommandConfigurator {
 		$silexApp = $this->getApplication()->getSilexApplication();
 		$db = $input->getOption('db');
 
-		if(!isset($silexApp['db.migrations.' . $db])) {
+		if(!isset($silexApp['db.migrations'][$db])) {
 			throw new \InvalidArgumentException(sprintf('Doctrine Migrations configuration error: unable to configure migrations for "%s" database connection', $db));
 		}
 
