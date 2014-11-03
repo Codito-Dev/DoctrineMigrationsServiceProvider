@@ -6,15 +6,15 @@ use Codito\Silex\DoctrineMigrationsService\Console\CommandConfigurator;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Doctrine\DBAL\Migrations\Tools\Console\Command\StatusCommand as BaseStatusCommand;
+use Doctrine\DBAL\Migrations\Tools\Console\Command\MigrateCommand as BaseMigrateCommand;
 
 /**
- * Command to view the status of a set of migrations.
- * It's a wrapper for Doctrine Migrations' status command.
+ * Command for executing a migration to a specified version or the latest available version.
+ * It's a wrapper for Doctrine Migrations' migrate command.
  *
  * @author Grzegorz Korba <grzegorz.korba@codito.net>
  */
-class StatusCommand extends BaseStatusCommand {
+class MigrateCommand extends BaseMigrateCommand {
 	use CommandConfigurator;
 
 	protected function configure() {
@@ -22,7 +22,7 @@ class StatusCommand extends BaseStatusCommand {
 
 		$this->prepareOptions();
 
-		$this->setName('doctrine:migrations:status');
+		$this->setName('doctrine:migrations:migrate');
 	}
 
 	public function execute(InputInterface $input, OutputInterface $output) {

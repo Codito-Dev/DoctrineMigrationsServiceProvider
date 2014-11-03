@@ -66,7 +66,10 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 
 		$app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
 			$consoleApp = $event->getApplication(); /* @var $console ConsoleApp */
+			$consoleApp->add(new DoctrineCommands\ExecuteCommand());
+			$consoleApp->add(new DoctrineCommands\MigrateCommand());
 			$consoleApp->add(new DoctrineCommands\StatusCommand());
+			$consoleApp->add(new DoctrineCommands\VersionCommand());
 		});
 	}
 
