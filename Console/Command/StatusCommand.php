@@ -26,7 +26,7 @@ class StatusCommand extends BaseStatusCommand {
 	}
 
 	public function execute(InputInterface $input, OutputInterface $output) {
-		$this->resolveConfiguration($input);
+		$this->resolveConfiguration($input, $output);
 
 		parent::execute($input, $output);
 	}
