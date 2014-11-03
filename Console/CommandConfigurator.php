@@ -12,7 +12,15 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\OutputWriter;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 
+/**
+ * CommandConfigurator defines common methods for configuring commands
+ * 
+ * @author Grzegorz Korba <grzegorz.korba@codito.net>
+ */
 trait CommandConfigurator {
+	/**
+	 * Removes options from parent command's definition and adds custom "db" option
+	 */
 	protected function prepareOptions() {
 		$definition = $this->getDefinition();
 
@@ -21,6 +29,12 @@ trait CommandConfigurator {
 		$this->addOption('db', null, InputOption::VALUE_OPTIONAL, 'Key of a database in application config (Helpful if using multiple connections with "dbs.options")', DoctrineMigrationsServiceProvider::DEFAULT_CONNECTION_NAME);
 	}
 
+	/**
+	 * Resolves configuration 
+	 * @param InputInterface $input
+	 * @param OutputInterface $output
+	 * @throws \InvalidArgumentException If migrations configuration for specified (or default) connection is invalid
+	 */
 	protected function resolveConfiguration(InputInterface $input, OutputInterface $output) {
 		$silexApp = $this->getApplication()->getSilexApplication();
 		$db = $input->getOption('db');

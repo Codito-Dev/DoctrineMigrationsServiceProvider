@@ -11,11 +11,23 @@ use Knp\Console\ConsoleEvents;
 use Knp\Console\ConsoleEvent;
 use Doctrine\DBAL\Connection;
 
+/**
+ * DoctrineMigrationsServiceProvider determines database connections configuration,
+ * prepares initial migrations configuration and registers migrations commands in {@see Knp\Console\Application},
+ * which should be registered in main Silex application.
+ * 
+ * @author Grzegorz Korba <grzegorz.korba@codito.net>
+ */
 class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 	// DoctrineServiceProvider's default connection's name (@see 'dbs.options.initializer')
 	const DEFAULT_CONNECTION_NAME = 'default';
 
+	/**
+	 * Registers provider
+	 * @param Application $app
+	 */
 	public function register(Application $app) {
+		// Prototype for migrations config (connection is not configurable, it's retrieved from app config and appended to migrations config)
 		$app['db.migrations.config._proto'] = $app->protect(function (Connection $connection, array $config) {
 			$defaults = array(
 				'dir_name' => null,
@@ -30,6 +42,7 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 			);
 		});
 
+		// Resolves initial migrations configuration for named connection
 		$app['db.migrations.config.resolver'] = $app->protect(function ($name) use($app) {
 			if(!isset($app['db.migrations.config']) || !is_array($app['db.migrations.config'])) {
 				return [];
@@ -47,6 +60,7 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 			return isset($config) ? $config : [];
 		});
 
+		// Main migrations config container
 		$app['db.migrations'] = $app->share(function ($app) {
 			$migrations = new \Pimple();
 
@@ -64,6 +78,7 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 			return $migrations;
 		});
 
+		// Listen for console initialization and add migrations commands
 		$app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
 			$consoleApp = $event->getApplication(); /* @var $console ConsoleApp */
 			$consoleApp->add(new DoctrineCommands\ExecuteCommand());
