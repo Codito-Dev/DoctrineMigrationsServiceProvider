@@ -44,17 +44,17 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 
 		// Resolves initial migrations configuration for named connection
 		$app['db.migrations.config.resolver'] = $app->protect(function ($name) use($app) {
-			if(!isset($app['db.migrations.config']) || !is_array($app['db.migrations.config'])) {
+			if(!isset($app['db.migrations.options']) || !is_array($app['db.migrations.options'])) {
 				return [];
 			}
 
 			// Handle multiple connections configuration (like 'dbs.options')
-			if(isset($app['db.migrations.config'][$name]) && is_array($app['db.migrations.config'][$name])) {
-				$config = $app['db.migrations.config'][$name];
+			if(isset($app['db.migrations.options'][$name]) && is_array($app['db.migrations.options'][$name])) {
+				$config = $app['db.migrations.options'][$name];
 			}
 			// Handle single connection (like 'db.option')
 			elseif($name == self::DEFAULT_CONNECTION_NAME) {
-				$config = $app['db.migrations.config'];
+				$config = $app['db.migrations.options'];
 			}
 
 			return isset($config) ? $config : [];
