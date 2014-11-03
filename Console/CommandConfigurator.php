@@ -6,6 +6,8 @@ use Codito\Silex\DoctrineMigrationsService\Provider\DoctrineMigrationsServicePro
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Validator\Validator;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
 
 trait CommandConfigurator {
@@ -25,6 +27,27 @@ trait CommandConfigurator {
 			throw new \InvalidArgumentException(sprintf('Doctrine Migrations configuration error: unable to configure migrations for "%s" database connection', $db));
 		}
 
-		$this->setMigrationConfiguration();
+		$migrationConfig = $silexApp['db.migrations'][$db];
+
+		if(!isset($migrationConfig['connection']) || !$migrationConfig['connection'] instanceof Connection) {
+			throw new \InvalidArgumentException(sprintf('Doctrine Migrations configuration error: Invalid connection for "%s" database', $db));
+		}
+
+		// If ValidatorServiceProvider is registered, validate configuration (otherwise we'll pass params to command and it'll handle errors)
+		if(isset($silexApp['validator']) && $silexApp['validator'] instanceof Validator) {
+			$this->validateConfiguration($migrationConfig);
+		}
+
+		$config = new Configuration($migrationConfig['connection']);
+		$config->setName($migrationConfig['name']);
+		$config->setMigrationsDirectory($migrationConfig['dir_name']);
+		$config->setMigrationsNamespace($migrationConfig['namespace']);
+		$config->setMigrationsTableName($migrationConfig['table_name']);
+
+		$this->setMigrationConfiguration($config);
+	}
+
+	protected function validateConfiguration(array $config) {
+		//@TODO advanced validation
 	}
 }
