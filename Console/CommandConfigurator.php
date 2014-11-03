@@ -43,6 +43,8 @@ trait CommandConfigurator {
 		$config->setMigrationsDirectory($migrationConfig['dir_name']);
 		$config->setMigrationsNamespace($migrationConfig['namespace']);
 		$config->setMigrationsTableName($migrationConfig['table_name']);
+		// IMPORTANT! Migration files are not autoloaded!
+		$config->registerMigrationsFromDirectory($migrationConfig['dir_name']);
 
 		$this->setMigrationConfiguration($config);
 	}
