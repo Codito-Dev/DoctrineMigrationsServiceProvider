@@ -30,12 +30,12 @@ trait CommandConfigurator {
 	}
 
 	/**
-	 * Resolves configuration 
+	 * Configures connection for command
 	 * @param InputInterface $input
 	 * @param OutputInterface $output
 	 * @throws \InvalidArgumentException If migrations configuration for specified (or default) connection is invalid
 	 */
-	protected function resolveConfiguration(InputInterface $input, OutputInterface $output) {
+	protected function resolveMigrationConfiguration(InputInterface $input, OutputInterface $output) {
 		$silexApp = $this->getApplication()->getSilexApplication();
 		$db = $input->getOption('db');
 

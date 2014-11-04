@@ -26,7 +26,7 @@ class VersionCommand extends BaseVersionCommand {
 	}
 
 	public function execute(InputInterface $input, OutputInterface $output) {
-		$this->resolveConfiguration($input, $output);
+		$this->resolveMigrationConfiguration($input, $output);
 
 		parent::execute($input, $output);
 	}
