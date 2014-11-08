@@ -85,6 +85,8 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 			$consoleApp->add(new DoctrineCommands\MigrateCommand());
 			$consoleApp->add(new DoctrineCommands\StatusCommand());
 			$consoleApp->add(new DoctrineCommands\VersionCommand());
+			$consoleApp->add(new DoctrineCommands\LatestCommand());
+			$consoleApp->add(new DoctrineCommands\GenerateCommand());
 		});
 	}
 
