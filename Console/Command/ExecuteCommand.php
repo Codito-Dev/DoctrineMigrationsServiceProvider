@@ -20,7 +20,8 @@ class ExecuteCommand extends BaseExecuteCommand {
 	protected function configure() {
 		parent::configure();
 
-		$this->prepareOptions();
+		$this->removeConfigOptions();
+		$this->addDbOption();
 
 		$this->setName('doctrine:migrations:execute');
 	}

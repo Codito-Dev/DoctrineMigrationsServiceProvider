@@ -19,13 +19,18 @@ use Doctrine\DBAL\Migrations\Configuration\Configuration;
  */
 trait CommandConfigurator {
 	/**
-	 * Removes options from parent command's definition and adds custom "db" option
+	 * Removes configuration options from parent command's definition
 	 */
-	protected function prepareOptions() {
+	protected function removeConfigOptions() {
 		$definition = $this->getDefinition();
 
 		$definition->setOptions(array_diff_key($definition->getOptions(), array('db-configuration' => '', 'configuration' => '')));
+	}
 
+	/**
+	 * Adds "db" option to command
+	 */
+	protected function addDbOption() {
 		$this->addOption('db', null, InputOption::VALUE_OPTIONAL, 'Key of a database in application config (Helpful if using multiple connections with "dbs.options")', DoctrineMigrationsServiceProvider::DEFAULT_CONNECTION_NAME);
 	}
 

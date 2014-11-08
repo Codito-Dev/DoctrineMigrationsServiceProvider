@@ -20,7 +20,8 @@ class StatusCommand extends BaseStatusCommand {
 	protected function configure() {
 		parent::configure();
 
-		$this->prepareOptions();
+		$this->removeConfigOptions();
+		$this->addDbOption();
 
 		$this->setName('doctrine:migrations:status');
 	}

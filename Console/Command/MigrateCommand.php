@@ -20,7 +20,8 @@ class MigrateCommand extends BaseMigrateCommand {
 	protected function configure() {
 		parent::configure();
 
-		$this->prepareOptions();
+		$this->removeConfigOptions();
+		$this->addDbOption();
 
 		$this->setName('doctrine:migrations:migrate');
 	}
