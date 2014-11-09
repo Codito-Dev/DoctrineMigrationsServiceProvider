@@ -77,7 +77,9 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 
 			return $migrations;
 		});
+	}
 
+	public function boot(Application $app) {
 		// Listen for console initialization and add migrations commands
 		$app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
 			$consoleApp = $event->getApplication(); /* @var $console ConsoleApp */
@@ -88,9 +90,5 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 			$consoleApp->add(new DoctrineCommands\LatestCommand());
 			$consoleApp->add(new DoctrineCommands\GenerateCommand());
 		});
-	}
-
-	public function boot(Application $app) {
-		
 	}
 }
