@@ -22,6 +22,9 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 	// DoctrineServiceProvider's default connection's name (@see 'dbs.options.initializer')
 	const DEFAULT_CONNECTION_NAME = 'default';
 
+	// DoctrineOrmServiceProvider's default manager's name (@see 'orm.ems.options.initializer')
+	const DEFAULT_ENTITY_MANAGER_NAME = 'default';
+
 	/**
 	 * Registers provider
 	 * @param Application $app
@@ -83,12 +86,18 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 		// Listen for console initialization and add migrations commands
 		$app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
 			$consoleApp = $event->getApplication(); /* @var $console ConsoleApp */
+			$silexApp = $consoleApp->getSilexApplication(); /* @var $silexApp Application */
+
 			$consoleApp->add(new DoctrineCommands\ExecuteCommand());
 			$consoleApp->add(new DoctrineCommands\MigrateCommand());
 			$consoleApp->add(new DoctrineCommands\StatusCommand());
 			$consoleApp->add(new DoctrineCommands\VersionCommand());
 			$consoleApp->add(new DoctrineCommands\LatestCommand());
 			$consoleApp->add(new DoctrineCommands\GenerateCommand());
+
+			if(isset($silexApp['orm.em'])) {
+				$consoleApp->add(new DoctrineCommands\DiffCommand());
+			}
 		});
 	}
 }
