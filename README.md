@@ -33,14 +33,14 @@ In order to use Doctrine Migrations commands in your console, you have to config
  * `DoctrineMigrationsServiceProvider` itself
 
 `DoctrineMigrationsServiceProvider` supports configuration both for single and multiple connections/entity managers.
- 
- Example config
- --------------
- 
- Register `DoctrineServiceProvider` (can be also configured with `db.options`, then it will be `default` connection)
- 
- ```php
- $app->register(new DoctrineServiceProvider(), array(
+
+Example config
+--------------
+
+Register `DoctrineServiceProvider` (can be also configured with `db.options`, then it will be `default` connection)
+
+```php
+$app->register(new DoctrineServiceProvider(), array(
 	'dbs.options' => array(
 		'some_connection' => array(
 			'driver'   => 'pdo_mysql',
@@ -78,6 +78,7 @@ $app->register(new Codito\Silex\DoctrineMigrationsService\Provider\DoctrineMigra
 	)
 ));
 ```
+
 Configuration of `DoctrineMigrationsServiceProvider` is always under `db.migrations.options`, regardless to single or multiple configs. Those configs are related to `db.options`/`dbs.options` and names must match in order to work correctly.
 
 Optionally, if you need `migrations:diff` command, you may want to register 

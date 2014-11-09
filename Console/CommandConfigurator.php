@@ -3,7 +3,6 @@
 namespace Codito\Silex\DoctrineMigrationsService\Console;
 
 use Codito\Silex\DoctrineMigrationsService\Provider\DoctrineMigrationsServiceProvider;
-//use Codito\Silex\DoctrineMigrationsService\Console\Helper\EntityManagerHelper;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
