@@ -15,12 +15,9 @@ Add entries to `composer.json`:
 
 ```json
 "require": {
-    "codito/doctrine-migrations-service-provider": "~0.3",
-    "doctrine/migrations": "@dev"
+    "codito/doctrine-migrations-service-provider": "~0.5"
 }
 ```
-
-Since `doctrine/migrations` does not have stable release yet, I didn't want to require it internally in `codito/doctrine-migrations-service-provider` because it could force you to change your `minimum-stability` config in order to install it. Adding both in your root project means you can have `minimum-stability: stable` and define `@dev` only for `doctrine/migrations`.
 
 Configuration
 -------------
