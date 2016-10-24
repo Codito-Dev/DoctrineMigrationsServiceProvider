@@ -1,7 +1,7 @@
 Doctrine Migrations Service Provider
 ====================================
 
-Provides [Doctrine Migrations](https://github.com/doctrine/migrations) commands in [Silex](http://silex.sensiolabs.org/) applications by extending console with additional commands. Those commands are wrappers for base Doctrine Migrations commands and for proper working require console application to be instance of console provided by [KnpLabs Console Service Provider](https://github.com/KnpLabs/ConsoleServiceProvider), because commands need access to some services and/or config options to properly resolve migrations configuration.
+Provides [Doctrine Migrations](https://github.com/doctrine/migrations) commands in [Silex](http://silex.sensiolabs.org/) applications by extending console with additional commands. Those commands are wrappers for base Doctrine Migrations commands and for proper working require console application to be instance of console provided by [Codito Console Service Provider](https://github.com/CoditoNet/silex-console-provider), because commands need access to some services and/or config options to properly resolve migrations configuration.
 
 Requirements
 ------------
@@ -28,7 +28,7 @@ Configuration
 In order to use Doctrine Migrations commands in your console, you have to configure few things:
 
  * `DoctrineServiceProvider` (one of Silex's default providers)
- * `ConsoleServiceProvider` from [here](https://github.com/KnpLabs/ConsoleServiceProvider)
+ * `ConsoleServiceProvider` from [here](https://github.com/CoditoNet/silex-console-provider)
  * `DoctrineOrmServiceProvider` from [here](https://github.com/dflydev/dflydev-doctrine-orm-service-provider), optionally (required only for `migrations:diff` command)
  * `DoctrineMigrationsServiceProvider` itself
 
@@ -54,20 +54,19 @@ $app->register(new DoctrineServiceProvider(), array(
 ));
 ```
 
-Register `ConsoleServiceProvider` (keep in mind that `console.project_directory` should point to root of your project)
+Register `ConsoleServiceProvider`
 
 ```php
-$app->register(new Knp\Provider\ConsoleServiceProvider(), array(
+$app->register(new \Codito\Silex\Provider\ConsoleServiceProvider(), array(
     'console.name'              => 'Silex App',
     'console.version'           => '1.0.0',
-    'console.project_directory' => __DIR__ . '/..' // Depends on your project structure!
 ));
 ```
 
 Register `DoctrineMigrationsServiceProvider`:
 
 ```php
-$app->register(new Codito\Silex\DoctrineMigrationsService\Provider\DoctrineMigrationsServiceProvider(), array(
+$app->register(new \Codito\Silex\DoctrineMigrationsService\Provider\DoctrineMigrationsServiceProvider(), array(
 	'db.migrations.options' => array(
 		'some_connection' => array(
 			'dir_name' => realpath(__DIR__ . '/Application/Migrations'),

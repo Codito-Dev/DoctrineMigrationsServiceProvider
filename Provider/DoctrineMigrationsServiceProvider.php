@@ -6,10 +6,8 @@ use Codito\Silex\DoctrineMigrationsService\Console\Command as DoctrineCommands;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
-use Knp\Console\Application as ConsoleApp;
-use Knp\Console\ConsoleEvents;
-use Knp\Console\ConsoleEvent;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\Console\Application as SymfonyConsole;
 
 /**
  * DoctrineMigrationsServiceProvider determines database connections configuration,
@@ -24,6 +22,23 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 
 	// DoctrineOrmServiceProvider's default manager's name (@see 'orm.ems.options.initializer')
 	const DEFAULT_ENTITY_MANAGER_NAME = 'default';
+
+	/**
+	 * The console application.
+	 *
+	 * @var SymfonyConsole
+	 */
+	protected $console;
+
+	/**
+	 * Creates a new doctrine migrations provider.
+	 *
+	 * @param SymfonyConsole $console
+	 */
+	public function __construct(SymfonyConsole $console)
+	{
+		$this->console = $console;
+	}
 
 	/**
 	 * Registers provider
@@ -82,22 +97,19 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
 		});
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
 	public function boot(Application $app) {
-		// Listen for console initialization and add migrations commands
-		$app['dispatcher']->addListener(ConsoleEvents::INIT, function(ConsoleEvent $event) {
-			$consoleApp = $event->getApplication(); /* @var $console ConsoleApp */
-			$silexApp = $consoleApp->getSilexApplication(); /* @var $silexApp Application */
+		$this->console->add(new DoctrineCommands\ExecuteCommand());
+		$this->console->add(new DoctrineCommands\MigrateCommand());
+		$this->console->add(new DoctrineCommands\StatusCommand());
+		$this->console->add(new DoctrineCommands\VersionCommand());
+		$this->console->add(new DoctrineCommands\LatestCommand());
+		$this->console->add(new DoctrineCommands\GenerateCommand());
 
-			$consoleApp->add(new DoctrineCommands\ExecuteCommand());
-			$consoleApp->add(new DoctrineCommands\MigrateCommand());
-			$consoleApp->add(new DoctrineCommands\StatusCommand());
-			$consoleApp->add(new DoctrineCommands\VersionCommand());
-			$consoleApp->add(new DoctrineCommands\LatestCommand());
-			$consoleApp->add(new DoctrineCommands\GenerateCommand());
-
-			if(isset($silexApp['orm.em'])) {
-				$consoleApp->add(new DoctrineCommands\DiffCommand());
-			}
-		});
+		if(isset($app['orm.em'])) {
+			$this->console->add(new DoctrineCommands\DiffCommand());
+		}
 	}
 }

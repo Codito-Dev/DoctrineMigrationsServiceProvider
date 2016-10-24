@@ -16,7 +16,7 @@
     },
     "require": {
         "php": ">=5.4",
-        "knplabs/console-service-provider": "~1.0"
+        "codito/silex-console-provider": "~0.1"
     },
     "suggest": {
         "dflydev/doctrine-orm-service-provider": "Required for using migrations:diff command (Generating migration files based on database existing schema and current entities definition)"
