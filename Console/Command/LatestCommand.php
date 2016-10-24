@@ -20,7 +20,6 @@ class LatestCommand extends BaseLatestCommand {
 	protected function configure() {
 		parent::configure();
 
-		$this->removeConfigOptions();
 		$this->addDbOption();
 
 		$this->setName('doctrine:migrations:latest');

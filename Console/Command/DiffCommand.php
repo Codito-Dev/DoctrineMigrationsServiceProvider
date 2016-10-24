@@ -21,7 +21,6 @@ class DiffCommand extends BaseDiffCommand {
 	protected function configure() {
 		parent::configure();
 
-		$this->removeConfigOptions();
 		$this->addDbOption(true);
 		$this->addEmOption();
 

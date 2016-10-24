@@ -20,7 +20,6 @@ class VersionCommand extends BaseVersionCommand {
 	protected function configure() {
 		parent::configure();
 
-		$this->removeConfigOptions();
 		$this->addDbOption();
 
 		$this->setName('doctrine:migrations:version');
