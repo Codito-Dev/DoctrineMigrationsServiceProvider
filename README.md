@@ -15,8 +15,8 @@ Add entries to `composer.json`:
 
 ```json
 "require": {
-	"codito/doctrine-migrations-service-provider": "~0.3",
-	"doctrine/migrations": "@dev"
+    "codito/doctrine-migrations-service-provider": "~0.3",
+    "doctrine/migrations": "@dev"
 }
 ```
 
@@ -41,16 +41,16 @@ Register `DoctrineServiceProvider` (can be also configured with `db.options`, th
 
 ```php
 $app->register(new DoctrineServiceProvider(), array(
-	'dbs.options' => array(
-		'some_connection' => array(
-			'driver'   => 'pdo_mysql',
-			'dbname'   => 'silex',
-			'host'     => 'localhost',
-			'user'     => 'root',
-			'password' => null,
-			'port'     => null,
-		)
-	)
+    'dbs.options' => array(
+        'some_connection' => array(
+            'driver'   => 'pdo_mysql',
+            'dbname'   => 'silex',
+            'host'     => 'localhost',
+            'user'     => 'root',
+            'password' => null,
+            'port'     => null,
+        )
+    )
 ));
 ```
 
@@ -67,14 +67,14 @@ Register `DoctrineMigrationsServiceProvider`:
 
 ```php
 $app->register(new \Codito\Silex\DoctrineMigrationsService\Provider\DoctrineMigrationsServiceProvider(), array(
-	'db.migrations.options' => array(
-		'some_connection' => array(
-			'dir_name' => realpath(__DIR__ . '/Application/Migrations'),
-			'namespace' => 'Application\\Migrations',
-			'table_name' => 'migration_versions',
-			'name' => 'Application Migrations',
-		)
-	)
+    'db.migrations.options' => array(
+        'some_connection' => array(
+            'dir_name' => realpath(__DIR__ . '/Application/Migrations'),
+            'namespace' => 'Application\\Migrations',
+            'table_name' => 'migration_versions',
+            'name' => 'Application Migrations',
+        )
+    )
 ));
 ```
 
@@ -84,21 +84,21 @@ Optionally, if you need `migrations:diff` command, you may want to register
 
 ```php
 $app->register(new Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), array(
-	"orm.proxies_dir" => __DIR__ . '/../var/orm',
-	"orm.ems.options" => array(
-		'some_entity_manager' => array(
-			'connection' => 'some_connection', // Important if you have custom connection name
-			"mappings" => array(
-				// Using actual filesystem paths
-				array(
-					"type" => "annotation",
-					"namespace" => "Application\Entity",
-					"path" => __DIR__ . "/Application/Entity",
-					'use_simple_annotation_reader' => false // Support for "use Doctrine\ORM\Mapping AS ORM" -> "@ORM\Entity"
-				),
-			),
-		)
-	),
+    "orm.proxies_dir" => __DIR__ . '/../var/orm',
+    "orm.ems.options" => array(
+        'some_entity_manager' => array(
+            'connection' => 'some_connection', // Important if you have custom connection name
+            "mappings" => array(
+                // Using actual filesystem paths
+                array(
+                    "type" => "annotation",
+                    "namespace" => "Application\Entity",
+                    "path" => __DIR__ . "/Application/Entity",
+                    'use_simple_annotation_reader' => false // Support for "use Doctrine\ORM\Mapping AS ORM" -> "@ORM\Entity"
+                ),
+            ),
+        )
+    ),
 ));
 ```
 

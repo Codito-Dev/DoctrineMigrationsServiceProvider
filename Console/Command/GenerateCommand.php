@@ -3,7 +3,6 @@
 namespace Codito\Silex\DoctrineMigrationsService\Console\Command;
 
 use Codito\Silex\DoctrineMigrationsService\Console\CommandConfigurator;
-
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand as BaseGenerateCommand;
@@ -14,20 +13,29 @@ use Doctrine\DBAL\Migrations\Tools\Console\Command\GenerateCommand as BaseGenera
  *
  * @author Grzegorz Korba <grzegorz.korba@codito.net>
  */
-class GenerateCommand extends BaseGenerateCommand {
-	use CommandConfigurator;
+class GenerateCommand extends BaseGenerateCommand
+{
+    use CommandConfigurator;
 
-	protected function configure() {
-		parent::configure();
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        parent::configure();
 
-		$this->addDbOption();
+        $this->addDbOption();
 
-		$this->setName('doctrine:migrations:generate');
-	}
+        $this->setName('doctrine:migrations:generate');
+    }
 
-	public function execute(InputInterface $input, OutputInterface $output) {
-		$this->resolveMigrationConfiguration($input, $output);
+    /**
+     * {@inheritdoc}
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $this->resolveMigrationConfiguration($input, $output);
 
-		parent::execute($input, $output);
-	}
+        parent::execute($input, $output);
+    }
 }
