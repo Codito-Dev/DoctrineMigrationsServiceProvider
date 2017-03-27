@@ -4,8 +4,10 @@ namespace Codito\Silex\DoctrineMigrationsService\Provider;
 
 use Codito\Silex\DoctrineMigrationsService\Console\Command as DoctrineCommands;
 
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Application as SymfonyConsole;
 
@@ -16,7 +18,8 @@ use Symfony\Component\Console\Application as SymfonyConsole;
  * 
  * @author Grzegorz Korba <grzegorz.korba@codito.net>
  */
-class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
+class DoctrineMigrationsServiceProvider implements ServiceProviderInterface, BootableProviderInterface
+{
     // DoctrineServiceProvider's default connection's name (@see 'dbs.options.initializer')
     const DEFAULT_CONNECTION_NAME = 'default';
 
@@ -44,7 +47,7 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
      * Registers provider
      * @param Application $app
      */
-    public function register(Application $app) {
+    public function register(Container $app) {
         // Prototype for migrations config (connection is not configurable, it's retrieved from app config and appended to migrations config)
         $app['db.migrations.config._proto'] = $app->protect(function (Connection $connection, array $config) {
             $defaults = array(
@@ -79,22 +82,22 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface {
         });
 
         // Main migrations config container
-        $app['db.migrations'] = $app->share(function ($app) {
-            $migrations = new \Pimple();
+        $app['db.migrations'] = function ($app) {
+            $migrations = new Container();
 
             $dbs = $app['dbs']->keys();
             foreach($dbs as $name) {
                 $connection = $app['dbs'][$name];
 
-                $migrations[$name] = $app->share(function () use($app, $name, $connection) {
+                $migrations[$name] = function () use($app, $name, $connection) {
                     $dbMigrationConfig = $app['db.migrations.config.resolver']($name);
 
                     return $app['db.migrations.config._proto']($connection, $dbMigrationConfig);
-                });
+                };
             }
 
             return $migrations;
-        });
+        };
     }
 
     /**
