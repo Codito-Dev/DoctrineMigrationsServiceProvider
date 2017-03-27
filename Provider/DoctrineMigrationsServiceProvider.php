@@ -3,7 +3,6 @@
 namespace Codito\Silex\DoctrineMigrationsService\Provider;
 
 use Codito\Silex\DoctrineMigrationsService\Console\Command as DoctrineCommands;
-
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
 use Silex\Application;
@@ -22,7 +21,6 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface, Boo
 {
     // DoctrineServiceProvider's default connection's name (@see 'dbs.options.initializer')
     const DEFAULT_CONNECTION_NAME = 'default';
-
     // DoctrineOrmServiceProvider's default manager's name (@see 'orm.ems.options.initializer')
     const DEFAULT_ENTITY_MANAGER_NAME = 'default';
 
@@ -47,7 +45,8 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface, Boo
      * Registers provider
      * @param Application $app
      */
-    public function register(Container $app) {
+    public function register(Container $app)
+    {
         // Prototype for migrations config (connection is not configurable, it's retrieved from app config and appended to migrations config)
         $app['db.migrations.config._proto'] = $app->protect(function (Connection $connection, array $config) {
             $defaults = array(
@@ -65,16 +64,16 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface, Boo
 
         // Resolves initial migrations configuration for named connection
         $app['db.migrations.config.resolver'] = $app->protect(function ($name) use($app) {
-            if(!isset($app['db.migrations.options']) || !is_array($app['db.migrations.options'])) {
+            if (!isset($app['db.migrations.options']) || !is_array($app['db.migrations.options'])) {
                 return [];
             }
 
             // Handle multiple connections configuration (like 'dbs.options')
-            if(isset($app['db.migrations.options'][$name]) && is_array($app['db.migrations.options'][$name])) {
+            if (isset($app['db.migrations.options'][$name]) && is_array($app['db.migrations.options'][$name])) {
                 $config = $app['db.migrations.options'][$name];
             }
             // Handle single connection (like 'db.option')
-            elseif($name == self::DEFAULT_CONNECTION_NAME) {
+            elseif ($name == self::DEFAULT_CONNECTION_NAME) {
                 $config = $app['db.migrations.options'];
             }
 
@@ -86,7 +85,7 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface, Boo
             $migrations = new Container();
 
             $dbs = $app['dbs']->keys();
-            foreach($dbs as $name) {
+            foreach ($dbs as $name) {
                 $connection = $app['dbs'][$name];
 
                 $migrations[$name] = function () use($app, $name, $connection) {
@@ -103,7 +102,8 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface, Boo
     /**
      * {@inheritdoc}
      */
-    public function boot(Application $app) {
+    public function boot(Application $app)
+    {
         $this->console->add(new DoctrineCommands\ExecuteCommand());
         $this->console->add(new DoctrineCommands\MigrateCommand());
         $this->console->add(new DoctrineCommands\StatusCommand());
@@ -111,7 +111,7 @@ class DoctrineMigrationsServiceProvider implements ServiceProviderInterface, Boo
         $this->console->add(new DoctrineCommands\LatestCommand());
         $this->console->add(new DoctrineCommands\GenerateCommand());
 
-        if(isset($app['orm.em'])) {
+        if (isset($app['orm.em'])) {
             $this->console->add(new DoctrineCommands\DiffCommand());
         }
     }
