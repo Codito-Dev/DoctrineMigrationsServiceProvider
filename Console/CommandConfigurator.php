@@ -3,6 +3,8 @@
 namespace Codito\Silex\DoctrineMigrationsService\Console;
 
 use Codito\Silex\DoctrineMigrationsService\Provider\DoctrineMigrationsServiceProvider;
+use Codito\Silex\DoctrineMigrationsService\Migration\ContainerAwareMigration;
+use Pimple;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,6 +12,7 @@ use Symfony\Component\Validator\Validator;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Migrations\OutputWriter;
 use Doctrine\DBAL\Migrations\Configuration\Configuration;
+use Doctrine\DBAL\Migrations\Version;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 
@@ -38,7 +41,7 @@ trait CommandConfigurator
     }
 
     /**
-     * Adds "db" option to command
+     * Adds "em" option to command
      */
     protected function addEmOption()
     {
@@ -61,6 +64,7 @@ trait CommandConfigurator
         InputInterface $input,
         OutputInterface $output
     ) {
+        /** @var Container $silexApp */
         $silexApp = $this->getApplication()->getSilexApplication();
         $db       = $input->getOption('db');
 
@@ -99,6 +103,9 @@ trait CommandConfigurator
         $config->registerMigrationsFromDirectory($migrationConfig['dir_name']);
 
         $this->setMigrationConfiguration($config);
+
+        // Support for migrations where Pimple container (Silex app) is required
+        $this->injectContainerToMigrations($silexApp, $config->getMigrations());
     }
 
     protected function validateConfiguration(array $config)
@@ -141,5 +148,22 @@ trait CommandConfigurator
         // Register entity manager helper with "em" alias for migrations:diff command
         $this->getHelperSet()->set(new EntityManagerHelper($silexApp['orm.ems'][$em]), 'em');
         $input->setOption('db', $connection);
+    }
+
+    /**
+     * @param Pimple $container
+     * @param Version[] $versions
+     *
+     * Injects the container to migrations aware of it
+     */
+    private function injectContainerToMigrations(Pimple $container, array $versions)
+    {
+        foreach ($versions as $version) {
+            $migration = $version->getMigration();
+
+            if ($migration instanceof ContainerAwareMigration) {
+                $migration->setContainer($container);
+            }
+        }
     }
 }

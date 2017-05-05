@@ -1,7 +1,11 @@
 Doctrine Migrations Service Provider
 ====================================
 
-Provides [Doctrine Migrations](https://github.com/doctrine/migrations) commands in [Silex](http://silex.sensiolabs.org/) applications by extending console with additional commands. Those commands are wrappers for base Doctrine Migrations commands and for proper working require console application to be instance of console provided by [Codito Console Service Provider](https://github.com/CoditoNet/silex-console-provider), because commands need access to some services and/or config options to properly resolve migrations configuration.
+Provides [Doctrine Migrations](https://github.com/doctrine/migrations) commands in [Silex v1.*](http://silex.sensiolabs.org/)
+applications by extending console with additional commands. Those commands are wrappers for base Doctrine Migrations 
+commands and for proper working require console application to be instance of console provided by 
+[Codito Console Service Provider](https://github.com/CoditoNet/silex-console-provider), because commands need access 
+to some services and/or config options to properly resolve migrations configuration.
 
 Requirements
 ------------
@@ -14,8 +18,10 @@ Installation
 Add entries to `composer.json`:
 
 ```json
-"require": {
-    "codito/doctrine-migrations-service-provider": "~0.5"
+{
+    "require": {
+        "codito/doctrine-migrations-service-provider": "~1.0"
+    }
 }
 ```
 
@@ -81,16 +87,16 @@ Optionally, if you need `migrations:diff` command, you may want to register
 
 ```php
 $app->register(new Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), array(
-    "orm.proxies_dir" => __DIR__ . '/../var/orm',
-    "orm.ems.options" => array(
+    'orm.proxies_dir' => __DIR__ . '/../var/orm',
+    'orm.ems.options' => array(
         'some_entity_manager' => array(
             'connection' => 'some_connection', // Important if you have custom connection name
-            "mappings" => array(
+            'mappings' => array(
                 // Using actual filesystem paths
                 array(
-                    "type" => "annotation",
-                    "namespace" => "Application\Entity",
-                    "path" => __DIR__ . "/Application/Entity",
+                    'type' => 'annotation',
+                    'namespace' => 'Application\Entity',
+                    'path' => __DIR__ . '/Application/Entity',
                     'use_simple_annotation_reader' => false // Support for "use Doctrine\ORM\Mapping AS ORM" -> "@ORM\Entity"
                 ),
             ),
@@ -125,6 +131,14 @@ doctrine
   doctrine:migrations:status     View the status of a set of migrations.
   doctrine:migrations:version    Manually add and delete migration versions from the version table.
 ```
+
+Container aware migrations
+--------------------------
+
+Since `v1.0` there is possibility to use migrations with auto-injected Pimple container (Silex app).
+If you need cointainer inside migrations, just implement `Codito\Silex\DoctrineMigrationsService\Migration\ContainerAwareMigration`
+interface or extend `Codito\Silex\DoctrineMigrationsService\Migration\AbstractContainerAwareMigration`.
+This is helpful if you have multiple connections and migration for one connection requires data from other connection or if some service must be called in order to execute migration.
 
 Please notice
 -------------
