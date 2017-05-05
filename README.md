@@ -15,7 +15,7 @@ Add entries to `composer.json`:
 
 ```json
 "require": {
-    "codito/doctrine-migrations-service-provider": "~0.5"
+    "codito/doctrine-migrations-service-provider": "~2.0"
 }
 ```
 
@@ -81,16 +81,16 @@ Optionally, if you need `migrations:diff` command, you may want to register
 
 ```php
 $app->register(new Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), array(
-    "orm.proxies_dir" => __DIR__ . '/../var/orm',
-    "orm.ems.options" => array(
+    'orm.proxies_dir' => __DIR__ . '/../var/orm',
+    'orm.ems.options' => array(
         'some_entity_manager' => array(
             'connection' => 'some_connection', // Important if you have custom connection name
-            "mappings" => array(
+            'mappings' => array(
                 // Using actual filesystem paths
                 array(
-                    "type" => "annotation",
-                    "namespace" => "Application\Entity",
-                    "path" => __DIR__ . "/Application/Entity",
+                    'type' => 'annotation',
+                    'namespace' => 'Application\Entity',
+                    'path' => __DIR__ . '/Application/Entity',
                     'use_simple_annotation_reader' => false // Support for "use Doctrine\ORM\Mapping AS ORM" -> "@ORM\Entity"
                 ),
             ),
@@ -125,6 +125,14 @@ doctrine
   doctrine:migrations:status     View the status of a set of migrations.
   doctrine:migrations:version    Manually add and delete migration versions from the version table.
 ```
+
+Container aware migrations
+--------------------------
+
+Since `v2.1` there is possibility to use migrations with auto-injected Pimple container (Silex app).
+If you need cointainer inside migrations, just implement `Codito\Silex\DoctrineMigrationsService\Migration\ContainerAwareMigration`
+interface or extend `Codito\Silex\DoctrineMigrationsService\Migration\AbstractContainerAwareMigration`.
+This is helpful if you have multiple connections and migration for one connection requires data from other connection or if some service must be called in order to execute migration.
 
 Please notice
 -------------
