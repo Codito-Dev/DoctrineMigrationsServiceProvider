@@ -38,7 +38,7 @@ trait CommandConfigurator
     }
 
     /**
-     * Adds "db" option to command
+     * Adds "em" option to command
      */
     protected function addEmOption()
     {
